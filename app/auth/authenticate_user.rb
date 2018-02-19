@@ -5,15 +5,13 @@ class AuthenticateUser
   end
 
   def call(user_id)
-    JsonWebToken.encode(user_id: user_id)
+    JsonWebToken.encode(user_id: user_id) if user
   end
 
-  private
-
-  attr_reader :email, :password
+  attr_accessor :email, :password
 
   def user
-    user = User.find_by(email: email)
+    user = User.find_by_email(email)
     return user if user && user.authenticate(password)
     raise(ExceptionHandler::AuthenticationError, Message.invalid_credentials)
   end
